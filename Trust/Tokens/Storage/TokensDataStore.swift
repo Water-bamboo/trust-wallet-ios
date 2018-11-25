@@ -250,11 +250,12 @@ extension Coin {
     var server: RPCServer {
         switch self {
         case .bitcoin: return RPCServer.main //TODO
-        case .ethereum: return RPCServer.main
-        case .ethereumClassic: return RPCServer.classic
-        case .gochain: return RPCServer.gochain
-        case .callisto: return RPCServer.callisto
-        case .poa: return RPCServer.poa
+        case .ethereum: return RPCServer.main//nanew//todo, server有，但coin没有
+        case .ethereumClassic: return RPCServer.main//classic
+        case .gochain: return RPCServer.main//gochain
+        case .callisto: return RPCServer.main//callisto
+        case .poa: return RPCServer.main//poa
+//        case .nanew: return RPCServer.main//nanew
         }
     }
 }

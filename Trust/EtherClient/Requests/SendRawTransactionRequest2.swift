@@ -3,7 +3,7 @@
 import Foundation
 import JSONRPCKit
 
-struct SendRawTransactionRequest: JSONRPCKit.Request {
+struct SendRawTransactionRequest2: JSONRPCKit.Request {
     typealias Response = String
 
     let signedTransaction: String

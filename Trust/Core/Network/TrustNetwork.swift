@@ -48,6 +48,7 @@ final class TrustNetwork: NetworkProtocol {
 
     private func getTickerFrom(_ rawTicker: CoinTicker) -> CoinTicker? {
         guard let contract = EthereumAddress(string: rawTicker.contract) else { return .none }
+        print("TrustNetwork::getTickerFrom::contract=\(contract), rawTicker=\(rawTicker)")
         return CoinTicker(
             price: rawTicker.price,
             percent_change_24h: rawTicker.percent_change_24h,
@@ -57,6 +58,7 @@ final class TrustNetwork: NetworkProtocol {
     }
 
     func tokensList() -> Promise<[TokenObject]> {
+        print("TrustNetwork::tokensList(), gettokens(dict)=\(dict)")
         return Promise { seal in
             provider.request(.getTokens(dict)) { result in
                 switch result {
@@ -81,6 +83,7 @@ final class TrustNetwork: NetworkProtocol {
                 currency: Config.current.currency.rawValue,
                 tokens: tokenPrices
             )
+            print("TrustNetwork::tickers:tokenPrices=\(tokenPrices)")
             provider.request(.prices(tokensPriceToFetch)) { result in
                 switch result {
                 case .success(let response):
@@ -100,6 +103,7 @@ final class TrustNetwork: NetworkProtocol {
 
     func collectibles() -> Promise<[CollectibleTokenCategory]> {
         return Promise { seal in
+            print("TrustNetwork::collectibles:dict=\(dict)")
             provider.request(.collectibles(dict)) { result in
                 switch result {
                 case .success(let response):
@@ -117,6 +121,7 @@ final class TrustNetwork: NetworkProtocol {
     }
 
     func transactions(for address: Address, on server: RPCServer, startBlock: Int, page: Int, contract: String?, completion: @escaping (([Transaction]?, Bool)) -> Void) {
+        print("TrustNetwork::transactions:address=\(address):server=\(server),startBlock=\(startBlock),contract=\(contract)")
         provider.request(.getTransactions(server: server, address: address.description, startBlock: startBlock, page: page, contract: contract)) { result in
             switch result {
             case .success(let response):
@@ -134,6 +139,7 @@ final class TrustNetwork: NetworkProtocol {
 
     func search(query: String) -> Promise<[TokenObject]> {
         return Promise { seal in
+            print("TrustNetwork::search=\(query),networks=\(networks)")
             provider.request(.search(query: query, networks: networks)) { result in
                 switch result {
                 case .success(let response):

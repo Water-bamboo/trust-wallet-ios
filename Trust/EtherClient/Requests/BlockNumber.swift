@@ -12,6 +12,7 @@ struct BlockNumberRequest: JSONRPCKit.Request {
     }
 
     func response(from resultObject: Any) throws -> Response {
+        print("BlockNumberRequest::method\(method)")
         if let response = resultObject as? String, let value = BigInt(response.drop0x, radix: 16) {
             return numericCast(value)
         } else {

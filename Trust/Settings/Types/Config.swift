@@ -43,10 +43,10 @@ struct Config {
     var servers: [Coin] {
         return [
             Coin.ethereum,
-            Coin.ethereumClassic,
-            Coin.poa,
-            Coin.callisto,
-            Coin.gochain,
+//            Coin.ethereumClassic,
+//            Coin.poa,
+//            Coin.callisto,
+//            Coin.gochain,
         ]
     }
 }

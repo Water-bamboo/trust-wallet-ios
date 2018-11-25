@@ -13,6 +13,8 @@ public final class ERC721Encoder {
         try! encoder.encode(function: function, arguments: [from, to, tokenId])
         return encoder.data
     }
+
+
 }
 
 public class SendNFTCell: Cell<Bool>, CellType {

@@ -14,6 +14,7 @@ struct GetTransactionRequest: JSONRPCKit.Request {
     }
 
     var parameters: Any? {
+        print("GetTransactionRequest>>parameters=\(hash)")
         return [hash]
     }
 

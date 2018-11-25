@@ -15,10 +15,10 @@ struct SettingsViewModel {
     var servers: [RPCServer] {
         return [
             RPCServer.main,
-            RPCServer.classic,
-            RPCServer.poa,
-            RPCServer.callisto,
-            RPCServer.gochain,
+//            RPCServer.classic,
+//            RPCServer.poa,
+//            RPCServer.callisto,
+//            RPCServer.gochain,
         ]
     }
 

@@ -140,7 +140,8 @@ extension LocalSchemeCoordinator: WalletDelegate {
             data: transaction.payload,
             gasLimit: BigInt(transaction.gasLimit),
             gasPrice: transaction.gasPrice,
-            nonce: BigInt(transaction.nonce)
+            nonce: BigInt(transaction.nonce),
+            chainId: Int(25)
         )
 
         guard let account = account(for: session) else {

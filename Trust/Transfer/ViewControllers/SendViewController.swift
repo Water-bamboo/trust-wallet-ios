@@ -50,7 +50,10 @@ class SendViewController: FormViewController {
         let decimalSeparator = Locale.current.decimalSeparator ?? "."
         return "0123456789" + decimalSeparator
     }()
+
+
     private var data = Data()
+
     init(
         session: WalletSession,
         storage: TokensDataStore,
@@ -173,15 +176,35 @@ class SendViewController: FormViewController {
         guard let value = parsedValue else {
             return displayError(error: SendInputErrors.wrongInput)
         }
-        let transaction = UnconfirmedTransaction(
+
+        //let >> var
+        let string = "0x7f7465737432000000000000000000000000000000000000000000000000000000600057"
+        if let data1 = string.data(using: .utf8) {
+            data.append(data1)
+        }
+
+        var transaction = UnconfirmedTransaction(
             transfer: transfer,
             value: value,
             to: address,
             data: data,
             gasLimit: .none,
             gasPrice: viewModel.gasPrice,
-            nonce: .none
+            nonce: .none,
+            chainId: 25
         )
+
+        /**
+         * sz: fill unconfirmTransaction
+         */
+        transaction.nonce = 0x0;
+        transaction.gasLimit = 0x5208
+        transaction.gasPrice = 0xB165100C4
+//        let string = "0x7f7465737432000000000000000000000000000000000000000000000000000000600057"
+//        let data = string.data(using: .utf8)//(NSUTF8StringEncoding, allowLossyConversion: true)!
+//        transaction.data = data
+        transaction.chainId = 25
+
         self.delegate?.didPressConfirm(transaction: transaction, transfer: transfer, in: self)
     }
     @objc func openReader() {

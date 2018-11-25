@@ -59,7 +59,8 @@ extension DappAction {
             data: data,
             gasLimit: gasLimit,
             gasPrice: gasPrice,
-            nonce: nonce
+            nonce: nonce,
+            chainId: 25
         )
     }
 

@@ -3,20 +3,16 @@
 import Foundation
 import JSONRPCKit
 
-struct SendRawTransactionRequest: JSONRPCKit.Request {
+struct NKGetRateRequest: JSONRPCKit.Request {
     typealias Response = String
 
-    let signedTransaction: String
-
     var method: String {
-        return "eth_sendRawTransaction"
+        return "getRate"
     }
 
     var parameters: Any? {
-        print("SendRawTransactionRequest::signedTransaction=\(signedTransaction)")
-        return [
-            signedTransaction,
-        ]
+        return ["token":"0xf5f3bc1b51815785cdc5e4252aeb7083fc640a59",
+                "exchanger":"0xf5f3bc1b51815785cdc5e4252aeb7083fc640a59"]
     }
 
     func response(from resultObject: Any) throws -> Response {

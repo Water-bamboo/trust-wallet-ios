@@ -20,11 +20,17 @@ final class TokenBalanceOperation: TrustOperation {
     }
 
     private func updateBalance() {
+        if (store.account.coin != Coin.bitcoin && store.account.coin != Coin.ethereum) {
+            print("TokenBalanceOperation>>updateBalance:store.account.coin=\(store.account.coin)");
+            return
+        }
+        print("TokenBalanceOperation>>updateBalance:coin=\(store.account.coin)");
         balanceProvider.balance().done { [weak self] balance in
             guard let strongSelf = self else {
                 self?.finish()
                 return
             }
+            print("TokenBalanceOperation>>updateBalance=\(balance)");
             strongSelf.updateModel(with: balance)
         }.catch { _ in }
     }

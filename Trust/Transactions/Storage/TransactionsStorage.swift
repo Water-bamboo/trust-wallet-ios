@@ -62,6 +62,7 @@ class TransactionsStorage {
     }
 
     private func tokens(from transactions: [Transaction]) -> [Token] {
+        NSLog("TransactionStorage::tokens \(transactions)")
         let tokens: [Token] = transactions.compactMap { transaction in
             guard
                 let operation = transaction.localizedOperations.first,
@@ -86,7 +87,7 @@ class TransactionsStorage {
     }
 
     func update(state: TransactionState, for transaction: Transaction) {
-        NSLog("transaction \(transaction)")
+        NSLog("TransactionStorage::transaction \(transaction)")
         try? realm.write {
             let tempObject = transaction
             tempObject.internalState = state.rawValue

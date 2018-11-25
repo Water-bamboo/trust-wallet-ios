@@ -14,7 +14,8 @@ struct CallRequest: JSONRPCKit.Request {
     }
 
     var parameters: Any? {
-        return [["to": to, "data": data], "latest"]
+        print("CallRequest::parameters=\([["to": to, "data": data], "latest"])")
+        return [["to": to, "data": data], "latest"];
     }
 
     func response(from resultObject: Any) throws -> Response {

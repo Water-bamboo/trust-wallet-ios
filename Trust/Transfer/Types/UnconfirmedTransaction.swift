@@ -5,12 +5,14 @@ import BigInt
 import TrustCore
 
 struct UnconfirmedTransaction {
-    let transfer: Transfer
-    let value: BigInt
-    let to: EthereumAddress?
-    let data: Data?
+    var transfer: Transfer
+    var value: BigInt
+    var to: EthereumAddress?
+    var data: Data?
 
-    let gasLimit: BigInt?
-    let gasPrice: BigInt?
-    let nonce: BigInt?
+    var gasLimit: BigInt?
+    var gasPrice: BigInt?
+    var nonce: BigInt?
+    //sz:
+    var chainId: Int
 }

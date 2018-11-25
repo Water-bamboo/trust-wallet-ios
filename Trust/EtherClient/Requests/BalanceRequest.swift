@@ -14,6 +14,7 @@ struct BalanceRequest: JSONRPCKit.Request {
     }
 
     var parameters: Any? {
+        print("BalanceRequest>>parameters=\([address, "latest"])")
         return [address, "latest"]
     }
 
