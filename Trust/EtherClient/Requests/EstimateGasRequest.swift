@@ -15,7 +15,7 @@ struct EstimateGasRequest: JSONRPCKit.Request {
     }
 
     var parameters: Any? {
-        return [
+        let param = [
             [
                 "from": transaction.account.address.description.lowercased(),
                 "to": transaction.to?.description.lowercased() ?? "",
@@ -27,6 +27,8 @@ struct EstimateGasRequest: JSONRPCKit.Request {
                 "data": transaction.data.hexEncoded,
             ],
         ]
+//        print("EstimateGasRequest::parameters=\(parameters)")
+        return param;
     }
 
     func response(from resultObject: Any) throws -> Response {

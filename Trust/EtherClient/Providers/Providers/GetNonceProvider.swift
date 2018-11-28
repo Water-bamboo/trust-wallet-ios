@@ -72,6 +72,7 @@ final class GetNonceProvider: NonceProvider {
             address: address.description,
             state: "latest"
         )))
+        print("GetNonceProvider::fetch>>>server:\(server)")
         Session.send(request) { [weak self] result in
             guard let `self` = self else { return }
             switch result {

@@ -11,10 +11,12 @@ class WalletViewController: UIViewController {
     fileprivate lazy var segmentController: UISegmentedControl = {
         let items = [
             R.string.localizable.tokens(),
-            R.string.localizable.collectibles(),
+//            R.string.localizable.collectibles(),
         ]
         let segmentedControl = UISegmentedControl(items: items)
+        //默认i显示通证
         segmentedControl.selectedSegmentIndex = DetailsViewType.tokens.rawValue
+
         segmentedControl.addTarget(self, action: #selector(selectionDidChange(_:)), for: .valueChanged)
         let titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         let selectedTextAttributes = [NSAttributedStringKey.foregroundColor: Colors.blue]

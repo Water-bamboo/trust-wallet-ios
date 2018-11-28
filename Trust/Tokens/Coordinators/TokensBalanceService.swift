@@ -14,6 +14,7 @@ public class TokensBalanceService {
     init(
         server: RPCServer
     ) {
+        print("TokensBalanceService::init()")
         self.server = server
     }
 

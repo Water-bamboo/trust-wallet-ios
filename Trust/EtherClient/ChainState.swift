@@ -63,13 +63,16 @@ final class ChainState {
 
     private func getLastBlock() {
         let request = EtherServiceRequest(for: server, batch: BatchFactory().create(BlockNumberRequest()), timeoutInterval: 5.0)
+        print("ChainState:getLastBlock>>request=\(request)")
         Session.send(request) { [weak self] result in
             guard let `self` = self else { return }
             switch result {
             case .success(let number):
                 self.latestBlock = number
+                print("ChainState:getLastBlock>>.success>>number=<\(number)>")
                 self.chainStateCompletion?(true, number)
             case .failure:
+                print("ChainState:getLastBlock>>.failure>>")
                 self.chainStateCompletion?(false, 0)
             }
         }
@@ -77,11 +80,15 @@ final class ChainState {
 
     private func getGasPrice() {
         let request = EtherServiceRequest(for: server, batch: BatchFactory().create(GasPriceRequest()))
+        print("ChainState:getGasPrice>>.request=\(request)")
         Session.send(request) { [weak self] result in
             switch result {
             case .success(let balance):
                 self?.gasPrice = BigInt(balance.drop0x, radix: 16)
-            case .failure: break
+                print("ChainState:getGasPrice>>.success.balance=\(balance)")
+            case .failure:
+                print("ChainState:getGasPrice>>.failure")
+                break
             }
         }
     }

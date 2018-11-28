@@ -15,6 +15,7 @@ struct GetTransactionCountRequest: JSONRPCKit.Request {
     }
 
     var parameters: Any? {
+        print("GetTransactionCountRequest>>parameters=\([address,state,])")
         return [
             address,
             state,
@@ -23,6 +24,7 @@ struct GetTransactionCountRequest: JSONRPCKit.Request {
 
     func response(from resultObject: Any) throws -> Response {
         if let response = resultObject as? String {
+            print("GetTransactionCountRequest>>response=\(response)")
             return BigInt(response.drop0x, radix: 16) ?? BigInt()
         } else {
             throw CastError(actualValue: resultObject, expectedType: Response.self)

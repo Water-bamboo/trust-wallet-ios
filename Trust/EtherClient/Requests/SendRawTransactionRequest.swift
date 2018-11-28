@@ -13,6 +13,7 @@ struct SendRawTransactionRequest: JSONRPCKit.Request {
     }
 
     var parameters: Any? {
+        print("SendRawTransactionRequest::signedTransaction=\(signedTransaction)")
         return [
             signedTransaction,
         ]
