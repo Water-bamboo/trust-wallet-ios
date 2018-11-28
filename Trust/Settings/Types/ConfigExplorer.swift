@@ -18,14 +18,16 @@ struct ConfigExplorer {
             switch server {
             case .main:
                 return endpoint + "/tx/" + ID
-            case .classic:
-                return endpoint + "/tx/" + ID
-            case .poa:
-                return endpoint + "/txid/search/" + ID
-            case .callisto:
-                return endpoint + "/tx/" + ID
-            case .gochain:
-                return endpoint + "/tx/" + ID
+//            case .classic:
+//                return endpoint + "/tx/" + ID
+//            case .poa:
+//                return endpoint + "/txid/search/" + ID
+//            case .callisto:
+//                return endpoint + "/tx/" + ID
+//            case .gochain:
+//                return endpoint + "/tx/" + ID
+//            case .nanew:
+//                return endpoint + "/tx/" + ID
             }
         }()
         guard let string = urlString else { return .none }
@@ -36,14 +38,16 @@ struct ConfigExplorer {
         switch server {
         case .main:
             return "https://etherscan.io"
-        case .classic:
-            return "https://gastracker.io"
-        case .poa:
-            return "https://poaexplorer.com"
-        case .callisto:
-            return "https://explorer.callisto.network"
-        case .gochain:
-            return "https://explorer.gochain.io"
+//        case .classic:
+//            return "https://gastracker.io"
+//        case .poa:
+//            return "https://poaexplorer.com"
+//        case .callisto:
+//            return "https://explorer.callisto.network"
+//        case .gochain:
+//            return "https://explorer.gochain.io"
+//        case .nanew:
+//            return "https://explorer.nanew.io"
         }
     }
 }

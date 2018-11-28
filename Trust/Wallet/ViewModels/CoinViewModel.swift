@@ -3,6 +3,9 @@
 import Foundation
 import TrustCore
 
+/**
+ * all case of default are test
+ */
 struct CoinViewModel {
 
     let coin: Coin
@@ -14,11 +17,12 @@ struct CoinViewModel {
     var name: String {
         switch coin {
         case .bitcoin: return "Bitcoin"
-        case .ethereum: return "Ethereum"
+        case .ethereum: return "Ethereum(NAKA)"
         case .ethereumClassic: return "Ethereum Classic"
         case .poa: return "POA Network"
         case .callisto: return "Callisto"
         case .gochain: return "GoChain"
+        default: return "TestCoin"
         }
     }
 
@@ -30,6 +34,7 @@ struct CoinViewModel {
         case .poa: return "POA"
         case .gochain: return "GO"
         case .bitcoin: return "Bitcoin"
+        default: return "TestSymb"
         }
     }
 
@@ -41,6 +46,7 @@ struct CoinViewModel {
         case .poa: return R.image.ethereum99()
         case .callisto: return R.image.ethereum820()
         case .gochain: return R.image.ethereum60()
+        default: return R.image.ethereum820()//test
         }
     }
 

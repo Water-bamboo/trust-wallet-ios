@@ -226,6 +226,9 @@ final class TokenViewModel {
         guard let provider = TokenViewModel.balance(for: token, wallet: session.account) else {
             return
         }
+        if (token.coin != .bitcoin && token.coin != .ethereum) {
+            return;
+        }
         let _ = provider.balance().done { [weak self] balance in
             self?.store.update(balance: balance, for: provider.addressUpdate)
         }
@@ -240,14 +243,14 @@ final class TokenViewModel {
                 return CoinNetworkProvider(
                     server: token.coin.server,
                     address: EthereumAddress(string: account.address.description)!,
-                    addressUpdate: token.address
+                    addressUpdate: token.address//合约地址
                 )
             case .ERC20:
                 return TokenNetworkProvider(
                     server: token.coin.server,
                     address: EthereumAddress(string: account.address.description)!,
                     contract: token.address,
-                    addressUpdate: token.address
+                    addressUpdate: token.address//也是合约地址
                 )
             }
         }()
