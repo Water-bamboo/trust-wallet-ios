@@ -53,11 +53,12 @@ struct CoinTypeViewModel {
     var server: RPCServer {
         switch account.coin! {
         case .ethereum: return RPCServer.main
-        case .ethereumClassic: return RPCServer.classic
-        case .gochain: return RPCServer.gochain
-        case .poa: return RPCServer.poa
-        case .callisto: return RPCServer.callisto
+        case .ethereumClassic: return RPCServer.main//classic
+        case .gochain: return RPCServer.main//gochain
+        case .poa: return RPCServer.main//poa
+        case .callisto: return RPCServer.main//callisto
         case .bitcoin: return RPCServer.main
+        default:return RPCServer.main//may be test chain
         }
     }
 }
@@ -155,7 +156,7 @@ class InCoordinator: Coordinator {
         browserCoordinator.delegate = self
         browserCoordinator.start()
         browserCoordinator.rootViewController.tabBarItem = viewModel.browserBarItem
-        addCoordinator(browserCoordinator)
+//        addCoordinator(browserCoordinator)
 
         let walletCoordinator = TokensCoordinator(
             session: session,
@@ -181,7 +182,7 @@ class InCoordinator: Coordinator {
         addCoordinator(settingsCoordinator)
 
         tabBarController.viewControllers = [
-            browserCoordinator.navigationController.childNavigationController,
+//            browserCoordinator.navigationController.childNavigationController,
             walletCoordinator.navigationController.childNavigationController,
             settingsCoordinator.navigationController.childNavigationController,
         ]
@@ -381,14 +382,17 @@ extension InCoordinator: SendCoordinatorDelegate {
         case .success(let confirmResult):
             switch confirmResult {
             case .sentTransaction(let transaction):
+                print("InCoordinator::sent success transaction=\(transaction)")
                 handlePendingTransaction(transaction: transaction)
                 // TODO. Pop 2 view controllers
                 coordinator.navigationController.childNavigationController.popToRootViewController(animated: true)
                 removeCoordinator(coordinator)
             case .signedTransaction:
+                print("InCoordinator::Sent success signed")
                 break
             }
         case .failure(let error):
+            print("InCoordinator::send fail error=\(error)")
             coordinator.navigationController.topViewController?.displayError(error: error)
         }
     }

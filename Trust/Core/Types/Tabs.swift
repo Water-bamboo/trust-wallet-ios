@@ -15,9 +15,9 @@ enum Tabs {
 
     var index: Int {
         switch self {
-        case .browser: return 0
-        case .wallet: return 1
-        case .settings: return 2
+        case .browser: return 3
+        case .wallet: return 0
+        case .settings: return 1
         }
     }
 }
