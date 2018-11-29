@@ -24,6 +24,9 @@ struct EIP155Signer: Signer {
             transaction.to?.data ?? Data(),
             transaction.value,
             transaction.data,
+            transaction.token?.data ?? Data(),//sz
+            transaction.exchanger?.data ?? Data(),
+            transaction.exchangeRate,//sz
             transaction.chainID, 0, 0,
         ] as [Any])!
     }

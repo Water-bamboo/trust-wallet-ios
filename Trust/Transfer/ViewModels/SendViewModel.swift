@@ -5,10 +5,12 @@ import TrustCore
 import BigInt
 import JSONRPCKit
 import APIKit
+import PromiseKit
 
 enum SendViewType {
-    case address
+    case address//Receiver
     case amount
+    case exchangeRate
 }
 
 struct SendViewModel {
@@ -60,6 +62,7 @@ struct SendViewModel {
         self.storage = storage
         self.balance = balance
     }
+
     var title: String {
         return "Send \(symbol)"
     }
@@ -70,10 +73,14 @@ struct SendViewModel {
         return .white
     }
 
+    var exchangeRate: String {
+        return ""
+    }
+
     var views: [SendViewType] {
         switch transfer.type {
         case .ether, .dapp, .token:
-            return [.address, .amount]
+            return [.address, .amount, .exchangeRate]
         }
     }
 
@@ -171,5 +178,35 @@ struct SendViewModel {
     /// If ther is need to show max button.
     mutating func isMaxButtonHidden() -> Bool {
         return currentPair.left != symbol
+    }
+
+    /// fetch exchange rate:
+    func fetchExchangeRate(server: RPCServer) {//}-> Promise<String> {
+//        return Promise { seal in
+//            let contract = EthereumAddress(string: "0xc891d581be98880cce6a10f26af2e4cf4e730bbb");
+//            let encoded = ERC20Encoder.encodeExchangeRate(
+//                token: contract!,
+//                exchanger: EthereumAddress(string: "0x8102c0ecece895b8fefbddf42b95b7a20925b0c8")!)
+//            print("SendViewModel::exchangeRate():encodeBalanceOf=\(encoded)")
+//            let request = EtherServiceRequest(
+//                for: server,
+//                batch: BatchFactory().create(CallRequest(to: contract!.description, data: encoded.hexEncoded))
+//            )
+//            print("SendViewModel::exchangeRate():request=\(request),contract.desc=\(contract!.description)")
+//            Session.send(request) { result in
+//                switch result {
+//                case .success(let rate):
+////                    guard let value = BigInt(balance.drop0x, radix: 16) else {
+////                        print("SendViewModel::exchangeRate():seal.reject.00");
+////                        return seal.reject(CookiesStoreError.empty)
+////                    }
+//                    print("SendViewModel::exchangeRate():seal.fulfill=\(rate)");
+//                    seal.fulfill(rate)
+//                case .failure(let error):
+//                    print("SendViewModel::exchangeRate():seal.reject.11");
+//                    seal.reject(error)
+//                }
+//            }
+//        }
     }
 }

@@ -20,6 +20,7 @@ final class SendTransactionCoordinator {
         confirmType: ConfirmType,
         server: RPCServer
     ) {
+        print("SendTransactionCoordinator::init")
         self.session = session
         self.keystore = keystore
         self.confirmType = confirmType
@@ -30,6 +31,7 @@ final class SendTransactionCoordinator {
         transaction: SignTransaction,
         completion: @escaping (Result<ConfirmResult, AnyError>) -> Void
     ) {
+        print("SendTransactionCoordinator::send.nonce=\(transaction.nonce)")
         if transaction.nonce >= 0 {
             signAndSend(transaction: transaction, completion: completion)
         } else {
@@ -51,6 +53,7 @@ final class SendTransactionCoordinator {
     }
 
     private func appendNonce(to: SignTransaction, currentNonce: BigInt) -> SignTransaction {
+        print("SendTransactionCoordinator::appendNonce")
         return SignTransaction(
             value: to.value,
             account: to.account,
@@ -68,17 +71,21 @@ final class SendTransactionCoordinator {
         transaction: SignTransaction,
         completion: @escaping (Result<ConfirmResult, AnyError>) -> Void
     ) {
+        print("SendTransactionCoordinator::signAndSend:before>>tx=\(transaction)")
         let signedTransaction = keystore.signTransaction(transaction)
-
+        print("SendTransactionCoordinator::signAndSend:after sign tx=\(signedTransaction)")
         switch signedTransaction {
         case .success(let data):
+            print("111succeed=\(data)")
             approve(confirmType: confirmType, transaction: transaction, data: data, completion: completion)
         case .failure(let error):
+            print("222error=\(error)")
             completion(.failure(AnyError(error)))
         }
     }
 
     private func approve(confirmType: ConfirmType, transaction: SignTransaction, data: Data, completion: @escaping (Result<ConfirmResult, AnyError>) -> Void) {
+        print("SendTransactionCoordinator::approve:data=\(data)")
         let id = data.sha3(.keccak256).hexEncoded
         let sentTransaction = SentTransaction(
             id: id,
@@ -91,11 +98,14 @@ final class SendTransactionCoordinator {
             completion(.success(.sentTransaction(sentTransaction)))
         case .signThenSend:
             let request = EtherServiceRequest(for: server, batch: BatchFactory().create(SendRawTransactionRequest(signedTransaction: dataHex)))
+            print("SendTransactionCoordinator>>request=\(request)")
             Session.send(request) { result in
                 switch result {
                 case .success:
+                    print("SendTransactionCoordinator>>success!!")
                     completion(.success(.sentTransaction(sentTransaction)))
                 case .failure(let error):
+                    print("SendTransactionCoordinator>>error=\(error)")
                     completion(.failure(AnyError(error)))
                 }
             }

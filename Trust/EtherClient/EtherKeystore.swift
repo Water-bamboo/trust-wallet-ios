@@ -383,6 +383,10 @@ class EtherKeystore: Keystore {
                 transaction.to?.data ?? Data(),
                 transaction.value,
                 transaction.data,
+                //hart:
+                transaction.token?.data ?? Data(),//sz
+                transaction.exchanger?.data ?? Data(),//sz
+                transaction.exchangeRate,//sz
                 v, r, s,
             ])!
             return .success(data)

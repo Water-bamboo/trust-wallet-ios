@@ -115,7 +115,7 @@ class ConfirmPaymentViewController: UIViewController {
             footerStack.bottomAnchor.constraint(equalTo: view.layoutGuide.bottomAnchor, constant: -StyleLayout.sideMargin),
 
             submitButton.leadingAnchor.constraint(equalTo: footerStack.leadingAnchor),
-            submitButton.trailingAnchor.constraint(equalTo: footerStack.leadingAnchor),
+            submitButton.trailingAnchor.constraint(equalTo: footerStack.trailingAnchor),//fix from leadingAnchor
         ])
 
         let header = TransactionHeaderView()
@@ -178,7 +178,7 @@ class ConfirmPaymentViewController: UIViewController {
             status, config: configurator.session.config,
             transfer: configurator.transaction.transfer
         )
-        submitButton.isEnabled = status.sufficient
+        submitButton.isEnabled = true//status.sufficient
         submitButton.setTitle(buttonTitle, for: .normal)
     }
 

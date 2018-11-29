@@ -25,8 +25,11 @@ class SendViewController: FormViewController {
     }()
     weak var delegate: SendViewControllerDelegate?
     struct Values {
-        static let address = "address"
+        static let address = "address"//receiver
         static let amount = "amount"
+        static let token = "token"//gas要使用的tokenA
+        static let exchanger = "exchanger"
+        static let exchangeRate = "exchangeRate"
     }
     let session: WalletSession
     let account: Account
@@ -39,6 +42,10 @@ class SendViewController: FormViewController {
     var amountRow: TextFloatLabelRow? {
         return form.rowBy(tag: Values.amount) as? TextFloatLabelRow
     }
+    var exchangeRateRow: TextFloatLabelRow? {
+//        exchangeRateRow.requ
+        return form.rowBy(tag: Values.exchangeRate) as? TextFloatLabelRow
+    }
     lazy var maxButton: UIButton = {
         let button = Button(size: .normal, style: .borderless)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -50,7 +57,10 @@ class SendViewController: FormViewController {
         let decimalSeparator = Locale.current.decimalSeparator ?? "."
         return "0123456789" + decimalSeparator
     }()
+
+
     private var data = Data()
+
     init(
         session: WalletSession,
         storage: TokensDataStore,
@@ -97,14 +107,18 @@ class SendViewController: FormViewController {
             return addressField()
         case .amount:
             return amountField()
+        case .exchangeRate:
+            return exchangeRateField()
         }
     }
 
     func addressField() -> TextFloatLabelRow {
         let recipientRightView = AddressFieldView()
         recipientRightView.translatesAutoresizingMaskIntoConstraints = false
-        recipientRightView.pasteButton.addTarget(self, action: #selector(pasteAction), for: .touchUpInside)
-        recipientRightView.qrButton.addTarget(self, action: #selector(openReader), for: .touchUpInside)
+        recipientRightView.pasteButton.tag = 0;
+        recipientRightView.qrButton.tag = 0;
+        recipientRightView.pasteButton.addTarget(self, action: #selector(pasteAction(_:)), for: .touchUpInside)
+        recipientRightView.qrButton.addTarget(self, action: #selector(openReader(_:)), for: .touchUpInside)
 
         return AppFormAppearance.textFieldFloat(tag: Values.address) {
             $0.add(rule: EthereumAddressRule())
@@ -146,8 +160,57 @@ class SendViewController: FormViewController {
         }
     }
 
+    func exchangeRateField() -> TextFloatLabelRow {
+        let exchangeRateButton = Button(size: .normal, style: .borderless)
+        exchangeRateButton.translatesAutoresizingMaskIntoConstraints = false
+        exchangeRateButton.setTitle(NSLocalizedString("send.exchangerate.button", comment: ""), for: .normal)
+        exchangeRateButton.addTarget(self, action: #selector(fetchExchangeRateAction), for: .touchUpInside)
+//        exchangeRateButton.isHidden = viewModel.isFiatViewHidden()
+        let rightView = UIStackView(arrangedSubviews: [
+//            maxButton,
+            exchangeRateButton,
+            ])
+        rightView.translatesAutoresizingMaskIntoConstraints = false
+        rightView.distribution = .equalSpacing
+        rightView.spacing = 1
+        rightView.axis = .horizontal
+        return AppFormAppearance.textFieldFloat(tag: Values.exchangeRate) {
+//            $0.add(rule: RuleRequired())
+            $0.validationOptions = .validatesOnDemand
+            }.cellUpdate {[weak self] cell, _ in
+                cell.textField.isCopyPasteDisabled = true
+                cell.textField.textAlignment = .left
+                cell.textField.delegate = self
+//                cell.textField.placeholder = "\(self?.viewModel.exchangeRate ?? "") " + NSLocalizedString("send.exchangerate.textField.placeholder", value: "Amount", comment: "")
+                cell.textField.placeholder = "unknown"
+                cell.textField.keyboardType = .decimalPad
+                cell.textField.rightView = rightView
+                cell.textField.rightViewMode = .always
+        }
+    }
+
+    func gasTokenField() -> TextFloatLabelRow {
+        let recipientRightView = AddressFieldView()
+        recipientRightView.translatesAutoresizingMaskIntoConstraints = false;
+        recipientRightView.pasteButton.tag = 1;
+        recipientRightView.qrButton.tag = 1;
+        recipientRightView.pasteButton.addTarget(self, action: #selector(pasteAction( _:)), for: .touchUpInside);
+        recipientRightView.qrButton.addTarget(self, action: #selector(openReader(_:)), for: .touchUpInside);
+
+        return AppFormAppearance.textFieldFloat(tag: Values.address) {
+            $0.add(rule: EthereumAddressRule())
+            $0.validationOptions = .validatesOnDemand
+            }.cellUpdate { cell, _ in
+                cell.textField.textAlignment = .left
+                cell.textField.placeholder = NSLocalizedString("send.recipientAddress.textField.placeholder", value: "Recipient Address", comment: "")
+                cell.textField.rightView = recipientRightView
+                cell.textField.rightViewMode = .always
+                cell.textField.accessibilityIdentifier = "amount-field"
+        }
+    }
+
     func clear() {
-        let fields = [addressRow, amountRow]
+        let fields = [addressRow, amountRow, exchangeRateRow]
         for field in fields {
             field?.value = ""
             field?.reload()
@@ -158,6 +221,7 @@ class SendViewController: FormViewController {
         let errors = form.validate()
         guard errors.isEmpty else { return }
         let addressString = addressRow?.value?.trimmed ?? ""
+//        let addressToString = addressToRow?.value?.trimmed ?? ""//add send to.
         let amountString = viewModel.amount
         guard let address = EthereumAddress(string: addressString) else {
             return displayError(error: Errors.invalidAddress)
@@ -184,12 +248,12 @@ class SendViewController: FormViewController {
         )
         self.delegate?.didPressConfirm(transaction: transaction, transfer: transfer, in: self)
     }
-    @objc func openReader() {
+    @objc func openReader(_ button: UIButton) {
         let controller = QRCodeReaderViewController()
         controller.delegate = self
         present(controller, animated: true, completion: nil)
     }
-    @objc func pasteAction() {
+    @objc func pasteAction(_ button: UIButton) {
         guard let value = UIPasteboard.general.string?.trimmed else {
             return displayError(error: SendInputErrors.emptyClipBoard)
         }
@@ -197,14 +261,22 @@ class SendViewController: FormViewController {
         guard CryptoAddressValidator.isValidAddress(value) else {
             return displayError(error: Errors.invalidAddress)
         }
+
         addressRow?.value = value
         addressRow?.reload()
         activateAmountView()
     }
+
     @objc func useMaxAmount() {
         amountRow?.value = viewModel.sendMaxAmount()
         updatePriceSection()
         amountRow?.reload()
+    }
+    @objc func fetchExchangeRateAction(sender: UIButton) {
+        print("before<<<<<<<<<<");
+//        let exchangeRate = viewModel.fetchExchangeRate(server: session.currentRPC)
+//        print("after<<<<<<<<<<\(exchangeRate)");
+//        exchangeRateRow?.cell.textField.text = exchangeRate;
     }
     @objc func fiatAction(sender: UIButton) {
         let swappedPair = viewModel.currentPair.swapPair()
@@ -224,6 +296,7 @@ class SendViewController: FormViewController {
         //Set focuse on pair change.
         activateAmountView()
     }
+
     func activateAmountView() {
         amountRow?.cell.textField.becomeFirstResponder()
     }

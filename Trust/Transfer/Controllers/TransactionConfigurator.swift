@@ -70,6 +70,7 @@ final class TransactionConfigurator {
         )
     }
 
+    //hart: different type data is different.
     private static func data(for transaction: UnconfirmedTransaction, from: Address) -> Data {
         guard let to = transaction.to else { return Data() }
         switch transaction.transfer.type {
@@ -197,11 +198,13 @@ final class TransactionConfigurator {
     var signTransaction: SignTransaction {
         let value: BigInt = {
             switch transaction.transfer.type {
+                //hart: token=0
             case .ether, .dapp: return valueToSend()
             case .token: return 0
             }
         }()
         let address: EthereumAddress? = {
+            //hart:token is contract, eth is receiver
             switch transaction.transfer.type {
             case .ether, .dapp: return transaction.to
             case .token(let token): return token.contractAddress
@@ -229,7 +232,7 @@ final class TransactionConfigurator {
             account: account,
             to: address,
             nonce: configuration.nonce,
-            data: configuration.data,
+            data: configuration.data,//hart:data is empty for original and abi method for contract.
             gasPrice: configuration.gasPrice,
             gasLimit: configuration.gasLimit,
             chainID: server.chainID,

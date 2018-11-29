@@ -28,7 +28,7 @@ enum RPCServer {
 //        case .classic: return 61
 //        case .callisto: return 820
 //        case .gochain: return 60
-        case .main: return 25;
+        case .main: return 25;//hart:这个在signTransaction自动赋值并rlp
         }
     }
 
