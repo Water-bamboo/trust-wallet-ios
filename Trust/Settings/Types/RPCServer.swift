@@ -35,7 +35,7 @@ enum RPCServer {
     var priceID: Address {
         switch self {
             //一个虚拟合约地址=etherum的y原生合约地址(nativeCoin virtual contract)
-        case .main: return EthereumAddress(string: "0x0000000000000000000000000000000000000019")!
+        case .main: return EthereumAddress(string: "0x0000000000000000000000000000000000000019")!//0x19=25
 //        case .main: return EthereumAddress(string: "0x000000000000000000000000000000000000003c")!
 //        case .poa: return EthereumAddress(string: "0x00000000000000000000000000000000000000AC")!
 //        case .classic: return EthereumAddress(string: "0x000000000000000000000000000000000000003D")!
@@ -85,7 +85,8 @@ enum RPCServer {
 
     var rpcURL: URL {
         let urlString: String = {
-            return "http://18.182.44.53:8545"
+//            return "http://18.182.44.53:8545/2f5f50d2-bba4-4825-8187-ad4505e42ef0"
+            return "http://18.182.44.53:8545"///2f5f50d2-bba4-4825-8187-ad4505e42ef0"
 //            return "18.179.15.137"
 //            switch self {
 //            case .main: return "https://mainnet.infura.io/llyrtzQ3YhkdESt2Fzrk"

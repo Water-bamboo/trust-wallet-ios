@@ -376,20 +376,39 @@ class EtherKeystore: Keystore {
             let hash = signer.hash(transaction: transaction)
             let signature = try account.sign(hash: hash, password: password)
             let (r, s, v) = signer.values(transaction: transaction, signature: signature)
-            let data = RLP.encode([
-                transaction.nonce,
-                transaction.gasPrice,
-                transaction.gasLimit,
-                transaction.to?.data ?? Data(),
-                transaction.value,
-                transaction.data,
-                //hart:
-                transaction.token?.data ?? Data(),//sz
-                transaction.exchanger?.data ?? Data(),//sz
-                transaction.exchangeRate,//sz
-                v, r, s,
-            ])!
-            return .success(data)
+
+
+            if (transaction.token == nil || transaction.exchanger == nil || transaction.exchangeRate == 0) {
+                let data = RLP.encode([
+                    transaction.nonce,
+                    transaction.gasPrice,
+                    transaction.gasLimit,
+                    transaction.to?.data ?? Data(),
+                    transaction.value,
+                    transaction.data,
+                    v, r, s,
+                    ])!
+
+                return .success(data)
+            }
+            else
+            {
+                let data = RLP.encode([
+                    transaction.nonce,
+                    transaction.gasPrice,
+                    transaction.gasLimit,
+                    transaction.to?.data ?? Data(),
+                    transaction.value,
+                    transaction.data,
+                    //hart:
+                    transaction.token?.data ?? Data(),//sz
+                    transaction.exchanger?.data ?? Data(),//sz
+                    transaction.exchangeRate,//sz
+                    v, r, s,
+                ])!
+
+                return .success(data)
+            }
         } catch {
             return .failure(.failedToSignTransaction)
         }

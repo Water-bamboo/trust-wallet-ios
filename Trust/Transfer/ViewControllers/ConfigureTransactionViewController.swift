@@ -119,7 +119,7 @@ class ConfigureTransactionViewController: FormViewController {
 
         <<< SliderTextFieldRow(Values.gasLimit) {
             $0.title = NSLocalizedString("configureTransaction.gasLimit.label.title", value: "Gas Limit", comment: "")
-            $0.value = Float(configuration.gasLimit.description) ?? 21000
+            $0.value = Float(configuration.gasLimit.description) ?? 100000//hart:21000
             $0.minimumValue = Float(GasLimitConfiguration.min)
             $0.maximumValue = Float(GasLimitConfiguration.max)
             $0.steps = UInt((GasLimitConfiguration.max - GasLimitConfiguration.min) / 1000)

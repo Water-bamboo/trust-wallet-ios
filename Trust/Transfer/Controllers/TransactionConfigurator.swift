@@ -120,10 +120,11 @@ final class TransactionConfigurator {
             case .success(let gasLimit):
                 let gasLimit: BigInt = {
                     let limit = BigInt(gasLimit.drop0x, radix: 16) ?? BigInt()
-                    if limit == BigInt(21000) {
+                    if limit == BigInt(100000) {//hart:amend from 21000
                         return limit
                     }
-                    return limit + (limit * 20 / 100)
+                    let lr = limit + (limit * 20 / 100);
+                    return lr >= 100000 ? lr : 100000;
                 }()
                 completion(.success(gasLimit))
             case .failure(let error):
@@ -231,11 +232,21 @@ final class TransactionConfigurator {
             value: value,
             account: account,
             to: address,
-            nonce: configuration.nonce,
+            nonce: configuration.nonce,//hart:configuration.nonce,
             data: configuration.data,//hart:data is empty for original and abi method for contract.
-            gasPrice: configuration.gasPrice,
-            gasLimit: configuration.gasLimit,
+            //            gasPrice: configuration.gasPrice,Hart,
+            //            gasLimit: configuration.gasLimit,Hart,
+            gasPrice: BigInt("47619047620"),//default 47000000000 too little, follow nakajs-tx
+            gasLimit: BigInt("100000"),//hart default too little, must at least 0x186A0
             chainID: server.chainID,
+
+//            token:nil,
+//            exchanger:nil,
+//            exchangeRate:0,
+            token: EthereumAddress(string: "0xc371214F6ca48f1F5Ee74A78aE2C1032E1A06C4a"),//bot
+            exchanger: EthereumAddress(string: "0xD5D087daABC73Fc6Cc5D9C1131b93ACBD53A2428"),//
+            exchangeRate : BigInt("1000000000000000000"),//means=1naka?
+
             localizedObject: localizedObject
         )
 

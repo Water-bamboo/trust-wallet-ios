@@ -63,6 +63,9 @@ final class SendTransactionCoordinator {
             gasPrice: to.gasPrice,
             gasLimit: to.gasLimit,
             chainID: to.chainID,
+            token: to.token,
+            exchanger: to.exchanger,
+            exchangeRate : to.exchangeRate,
             localizedObject: to.localizedObject
         )
     }

@@ -17,6 +17,18 @@ struct EIP155Signer: Signer {
     }
 
     func hash(transaction: SignTransaction) -> Data {
+        if (transaction.token == nil || transaction.exchanger == nil || transaction.exchangeRate == 0) {
+            return rlpHash([
+                transaction.nonce,
+                transaction.gasPrice,
+                transaction.gasLimit,
+                transaction.to?.data ?? Data(),
+                transaction.value,
+                transaction.data,
+                transaction.chainID, 0, 0,
+                ] as [Any])!
+        }
+
         return rlpHash([
             transaction.nonce,
             transaction.gasPrice,
@@ -24,8 +36,8 @@ struct EIP155Signer: Signer {
             transaction.to?.data ?? Data(),
             transaction.value,
             transaction.data,
-            transaction.token?.data ?? Data(),//sz
-            transaction.exchanger?.data ?? Data(),
+            transaction.token!.data,
+            transaction.exchanger!.data,
             transaction.exchangeRate,//sz
             transaction.chainID, 0, 0,
         ] as [Any])!
